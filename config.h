@@ -25,4 +25,10 @@
 /* Update interval in seconds */
 #define UPDATE_INTERVAL 1
 
+#define VOLUME_INTERVAL 5
+
+#define MODULE_PADDING 50
+
+#define BATTERY_INTERVAL 5
+
 #endif

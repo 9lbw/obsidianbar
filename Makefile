@@ -1,6 +1,6 @@
 CC = cc
 CFLAGS = -std=c99 -pedantic -Wall -Wextra `pkg-config --cflags x11 xft`
-LDFLAGS = `pkg-config --libs x11 xft`
+LDFLAGS = `pkg-config --libs x11 xft` -lsndio
 
 TARGET = obsidianbar
 SRC = obsidianbar.c
