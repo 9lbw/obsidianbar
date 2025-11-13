@@ -14,7 +14,7 @@
 #define BAR_FG_COLOR 0xebdbb2
 
 /* Font configuration */
-#define FONT_NAME "Mono-12"
+#define FONT_NAME "Mono-8"
 
 /* Padding from edges */
 #define PADDING 10
@@ -30,5 +30,10 @@
 #define MODULE_PADDING 50
 
 #define BATTERY_INTERVAL 5
+
+/* Module decoration */
+#define DECORATION_ENABLED 0
+#define DECORATION_HEIGHT 2
+#define DECORATION_COLOR 0x458588
 
 #endif

@@ -229,6 +229,31 @@ void update_modules(void) {
   }
 }
 
+void draw_decoration(int x, int width) {
+  int y;
+  XGCValues gcv;
+  
+  if (!DECORATION_ENABLED)
+    return;
+  
+  gcv.foreground = DECORATION_COLOR;
+  XChangeGC(display, gc, GCForeground, &gcv);
+  
+  if (BAR_POSITION == 0) {
+    /* Bar at top - draw line at bottom of text area */
+    y = BAR_HEIGHT - DECORATION_HEIGHT;
+  } else {
+    /* Bar at bottom - draw line at top of text area */
+    y = 0;
+  }
+  
+  XFillRectangle(display, statusbar, gc, x, y, width, DECORATION_HEIGHT);
+  
+  /* Reset GC */
+  gcv.foreground = BAR_BG_COLOR;
+  XChangeGC(display, gc, GCForeground, &gcv);
+}
+
 void draw_modules_by_position(ModulePos pos) {
   XGlyphInfo extents;
   int bar_width = DisplayWidth(display, DefaultScreen(display));
@@ -236,7 +261,8 @@ void draw_modules_by_position(ModulePos pos) {
   int i;
   int total_width;
 
-  y = font->ascent + (BAR_HEIGHT - (font->ascent + font->descent)) / 2;
+  /* Center text vertically in bar */
+  y = (BAR_HEIGHT + font->ascent - font->descent) / 2;
 
   if (pos == POS_RIGHT) {
     x = bar_width - PADDING;
@@ -247,6 +273,8 @@ void draw_modules_by_position(ModulePos pos) {
       XftTextExtentsUtf8(display, font, (const FcChar8*)modules[i].buffer,
           strlen(modules[i].buffer), &extents);
       x -= extents.width;
+
+      draw_decoration(x, extents.width);
 
       XftDrawStringUtf8(xftdraw, &xftcolor, font, x, y,
           (const FcChar8*)modules[i].buffer, strlen(modules[i].buffer));
@@ -259,11 +287,14 @@ void draw_modules_by_position(ModulePos pos) {
       if (modules[i].position != POS_LEFT)
         continue;
 
+      XftTextExtentsUtf8(display, font, (const FcChar8*)modules[i].buffer,
+          strlen(modules[i].buffer), &extents);
+
+      draw_decoration(x, extents.width);
+
       XftDrawStringUtf8(xftdraw, &xftcolor, font, x, y,
           (const FcChar8*)modules[i].buffer, strlen(modules[i].buffer));
 
-      XftTextExtentsUtf8(display, font, (const FcChar8*)modules[i].buffer,
-          strlen(modules[i].buffer), &extents);
       x += extents.width + MODULE_PADDING;
     }
   } else if (pos == POS_CENTER) {
@@ -282,11 +313,14 @@ void draw_modules_by_position(ModulePos pos) {
       if (modules[i].position != POS_CENTER)
         continue;
 
+      XftTextExtentsUtf8(display, font, (const FcChar8*)modules[i].buffer,
+          strlen(modules[i].buffer), &extents);
+
+      draw_decoration(x, extents.width);
+
       XftDrawStringUtf8(xftdraw, &xftcolor, font, x, y,
           (const FcChar8*)modules[i].buffer, strlen(modules[i].buffer));
 
-      XftTextExtentsUtf8(display, font, (const FcChar8*)modules[i].buffer,
-          strlen(modules[i].buffer), &extents);
       x += extents.width + MODULE_PADDING;
     }
   }
